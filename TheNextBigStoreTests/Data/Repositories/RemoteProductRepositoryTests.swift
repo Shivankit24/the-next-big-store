@@ -1,7 +1,16 @@
+//
+//  RemoteProductRepositoryTests.swift
+//  TheNextBigStoreTests
+//
+//  Created by Shivankit on 10/11/26.
+//
+
 import Foundation
 import Testing
+
 @testable import TheNextBigStore
 
+@Suite
 struct RemoteProductRepositoryTests {
     @Test func fetchProductsRequestsProductList() async throws {
         let expected = [Product.fixture(id: 1), Product.fixture(id: 2)]

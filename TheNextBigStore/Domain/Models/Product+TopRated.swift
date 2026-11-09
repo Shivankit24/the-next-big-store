@@ -1,3 +1,10 @@
+//
+//  Product+TopRated.swift
+//  TheNextBigStore
+//
+//  Created by Shivankit on 10/11/26.
+//
+
 import Foundation
 
 extension Sequence where Element == Product {

@@ -1,3 +1,10 @@
+//
+//  RemoteProductRepository.swift
+//  TheNextBigStore
+//
+//  Created by Shivankit on 10/11/26.
+//
+
 import Foundation
 
 /// `ProductRepository` that reads products from the backend over HTTP.

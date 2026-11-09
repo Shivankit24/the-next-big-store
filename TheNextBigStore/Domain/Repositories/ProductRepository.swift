@@ -1,3 +1,10 @@
+//
+//  ProductRepository.swift
+//  TheNextBigStore
+//
+//  Created by Shivankit on 10/11/26.
+//
+
 import Foundation
 
 /// Source of catalogue products. Features depend on this protocol only, so the
