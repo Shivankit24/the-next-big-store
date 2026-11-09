@@ -13,4 +13,17 @@ nonisolated struct Constants {
         static let unexpectedResponse = "We received an unexpected response from the server."
         static let badStatus = "The server responded with an error "
     }
+
+    nonisolated struct Catalogue {
+        static let featuredCount = 5
+    }
+
+    nonisolated struct Currency {
+        static let code = "AUD"
+        static let localeIdentifier = "en_AU"
+    }
+
+    nonisolated struct Rating {
+        static let maxStars = 5
+    }
 }
