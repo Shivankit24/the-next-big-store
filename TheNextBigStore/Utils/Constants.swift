@@ -26,4 +26,10 @@ nonisolated struct Constants {
     nonisolated struct Rating {
         static let maxStars = 5
     }
+
+    nonisolated struct Home {
+        static let title = "Top Rated"
+        static let errorTitle = "Something went wrong"
+        static let retry = "Try Again"
+    }
 }

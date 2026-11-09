@@ -22,6 +22,6 @@ extension Sequence where Element == Product {
             if titleOrder != .orderedSame { return titleOrder == .orderedAscending }
             return lhs.id < rhs.id
         }
-        return Array(ranked.prefix(max(0, limit)))
+        return Array(ranked.prefix(Swift.max(0, limit)))
     }
 }
