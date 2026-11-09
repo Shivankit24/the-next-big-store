@@ -1,3 +1,10 @@
+//
+//  Product.swift
+//  TheNextBigStore
+//
+//  Created by Shivankit on 09/11/26.
+//
+
 import Foundation
 
 /// A catalogue product.
@@ -14,5 +21,7 @@ nonisolated struct Product: Codable, Identifiable, Equatable, Hashable, Sendable
     let rating: Rating
 
     /// The product image as a URL, or `nil` if the backend sent a malformed string.
-    var imageURL: URL? { URL(string: image) }
+    var imageURL: URL? {
+        URL(string: image)
+    }
 }

@@ -1,3 +1,10 @@
+//
+//  HTTPClient.swift
+//  TheNextBigStore
+//
+//  Created by Shivankit on 09/11/26.
+//
+
 import Foundation
 
 /// Sends endpoints to the backend and decodes the JSON response.

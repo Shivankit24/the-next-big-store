@@ -1,7 +1,16 @@
+//
+//  EndpointTests.swift
+//  TheNextBigStoreTests
+//
+//  Created by Shivankit on 09/11/26.
+//
+
 import Foundation
 import Testing
+
 @testable import TheNextBigStore
 
+@Suite
 struct EndpointTests {
     private let baseURL = URL(string: "http://localhost:3000")!
 
@@ -23,7 +32,7 @@ struct EndpointTests {
     @Test func appliesMethodHeadersAndBody() throws {
         let body = Data("{}".utf8)
         let endpoint = Endpoint(
-            path: "/enquiries",
+            path: "/products",
             method: .post,
             headers: ["Content-Type": "application/json"],
             body: body

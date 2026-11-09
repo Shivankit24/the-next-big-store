@@ -1,3 +1,10 @@
+//
+//  NetworkSession.swift
+//  TheNextBigStore
+//
+//  Created by Shivankit on 09/11/26.
+//
+
 import Foundation
 
 /// The single capability the HTTP client needs from `URLSession`.

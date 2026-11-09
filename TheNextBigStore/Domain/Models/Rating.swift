@@ -1,3 +1,10 @@
+//
+//  Rating.swift
+//  TheNextBigStore
+//
+//  Created by Shivankit on 09/11/26.
+//
+
 import Foundation
 
 /// Aggregate customer rating for a product.

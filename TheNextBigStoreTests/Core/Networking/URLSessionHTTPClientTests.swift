@@ -1,7 +1,16 @@
+//
+//  URLSessionHTTPClientTests.swift
+//  TheNextBigStoreTests
+//
+//  Created by Shivankit on 09/11/26.
+//
+
 import Foundation
 import Testing
+
 @testable import TheNextBigStore
 
+@Suite
 struct URLSessionHTTPClientTests {
     private struct StubSession: NetworkSession {
         let result: Result<(Data, URLResponse), URLError>

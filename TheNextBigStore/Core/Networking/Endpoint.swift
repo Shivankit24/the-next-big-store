@@ -1,3 +1,10 @@
+//
+//  Endpoint.swift
+//  TheNextBigStore
+//
+//  Created by Shivankit on 09/11/26.
+//
+
 import Foundation
 
 /// Describes a single backend call, independent of how it is sent.
@@ -16,9 +23,11 @@ nonisolated struct Endpoint: Sendable {
         ) else {
             throw NetworkError.invalidURL
         }
+
         if !queryItems.isEmpty {
             components.queryItems = queryItems
         }
+
         guard let url = components.url else {
             throw NetworkError.invalidURL
         }

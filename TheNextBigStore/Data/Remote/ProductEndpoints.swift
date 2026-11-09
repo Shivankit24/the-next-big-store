@@ -1,3 +1,10 @@
+//
+//  ProductEndpoints.swift
+//  TheNextBigStore
+//
+//  Created by Shivankit on 09/11/26.
+//
+
 import Foundation
 
 /// Backend routes for products (see `api_contract_data_models.md`).

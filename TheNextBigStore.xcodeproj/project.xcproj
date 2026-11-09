@@ -11,7 +11,21 @@
     ],
   },
   "files": [
-    { "kind": "folder", "path": "TheNextBigStore", "target-membership": [ "TheNextBigStore" ] },
+    {
+      "kind": "folder",
+      "path": "TheNextBigStore",
+      "target-membership": [
+        "TheNextBigStore",
+      ],
+      "membership-exceptions": [
+        {
+          "target": "TheNextBigStore",
+          "exclusions": [
+            "Info.plist",
+          ],
+        },
+      ],
+    },
     { "kind": "folder", "path": "TheNextBigStoreTests", "target-membership": [ "TheNextBigStoreTests" ] },
     {
       "kind": "group",
@@ -41,6 +55,7 @@
         "ENABLE_PREVIEWS": "YES",
         "ENABLE_USER_SELECTED_FILES": "readonly",
         "GENERATE_INFOPLIST_FILE": "YES",
+        "INFOPLIST_FILE": "TheNextBigStore/Info.plist",
         "INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]": "YES",
         "INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]": "YES",
         "INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]": "YES",

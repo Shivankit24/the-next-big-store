@@ -1,7 +1,16 @@
+//
+//  ProductEndpointsTests.swift
+//  TheNextBigStoreTests
+//
+//  Created by Shivankit on 09/11/26.
+//
+
 import Foundation
 import Testing
+
 @testable import TheNextBigStore
 
+@Suite
 struct ProductEndpointsTests {
     @Test func productsListPath() {
         #expect(Endpoint.products.path == "/products")
@@ -14,9 +23,18 @@ struct ProductEndpointsTests {
 
     @Test func productJSONFromContractDecodes() throws {
         let json = """
-        {"id": 4, "title": "Mens Casual Slim Fit", "price": 15.99, "description": "d",
-         "category": "men's clothing", "image": "https://fakestoreapi.com/img/71YXzeOuslL._AC_UY879_t.png",
-         "rating": {"rate": 2.1, "count": 430}}
+        {
+            "id": 4,
+            "title": "Mens Casual Slim Fit",
+            "price": 15.99,
+            "description": "d",
+            "category": "men's clothing",
+            "image": "https://fakestoreapi.com/img/71YXzeOuslL._AC_UY879_t.png",
+            "rating": {
+                "rate": 2.1,
+                "count": 430
+                }
+        }
         """
         let product = try JSONDecoder().decode(Product.self, from: Data(json.utf8))
 

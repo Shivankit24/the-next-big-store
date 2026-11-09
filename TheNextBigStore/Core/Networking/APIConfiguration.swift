@@ -1,3 +1,10 @@
+//
+//  APIConfiguration.swift
+//  TheNextBigStore
+//
+//  Created by Shivankit on 09/11/26.
+//
+
 import Foundation
 
 /// Where the backend lives. Injected into the HTTP client so the host can change
