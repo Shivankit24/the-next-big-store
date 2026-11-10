@@ -23,7 +23,7 @@ extension Product {
             title: title,
             price: price,
             description: "Description",
-            category: category,
+            category: ProductCategory(id: category, name: CategoryName.display(category)),
             imageURL: URL(string: "https://example.com/\(id).png"),
             rating: Rating(rate: rate, count: count)
         )

@@ -40,6 +40,7 @@ struct ProductDTOTests {
         #expect(product.title == "Mens Casual Slim Fit")
         #expect(product.price == 15.99)
         #expect(product.rating == Rating(rate: 2.1, count: 430))
+        #expect(product.category == ProductCategory(id: "men's clothing", name: "Men's Clothing"))
         #expect(product.imageURL?.absoluteString == "https://fakestoreapi.com/img/71YXzeOuslL._AC_UY879_t.png")
     }
 

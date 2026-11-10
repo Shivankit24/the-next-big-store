@@ -27,7 +27,7 @@ nonisolated enum PreviewData {
             title: title,
             price: price,
             description: "Preview description",
-            category: category,
+            category: ProductCategory(id: category, name: CategoryName.display(category)),
             imageURL: URL(string: "https://fakestoreapi.com/img/81fPKd-2AYL._AC_SL1500_t.png"),
             rating: Rating(rate: rate, count: count)
         )

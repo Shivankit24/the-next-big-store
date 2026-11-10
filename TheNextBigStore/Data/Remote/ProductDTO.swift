@@ -24,14 +24,16 @@ nonisolated struct ProductDTO: Decodable, Sendable {
         let count: Int
     }
 
-    /// Maps the wire format to the app's own `Product`.
+    /// Maps the wire format to the app's own `Product`. The Fake Store API only provides a
+    /// lower-case category string, so the display name is derived here; a real API would
+    /// supply its own.
     func asProduct() -> Product {
         Product(
             id: id,
             title: title.trimmingCharacters(in: .whitespacesAndNewlines),
             price: price,
             description: description,
-            category: category,
+            category: ProductCategory(id: category, name: CategoryName.display(category)),
             imageURL: URL(string: image),
             rating: Rating(rate: rating.rate, count: rating.count)
         )

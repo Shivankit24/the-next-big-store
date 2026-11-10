@@ -16,7 +16,7 @@ nonisolated struct Product: Identifiable, Equatable, Hashable, Sendable {
     let title: String
     let price: Double
     let description: String
-    let category: String
+    let category: ProductCategory
     let imageURL: URL?
     let rating: Rating
 }
