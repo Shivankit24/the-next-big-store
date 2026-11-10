@@ -35,7 +35,6 @@ nonisolated struct Constants {
     }
 
     nonisolated struct Category {
-        static let title = "Categories"
         static let topRated = "Top Rated"
         static let moreProducts = "More Products"
     }

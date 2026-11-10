@@ -18,8 +18,7 @@ struct CategoryView: View {
     var body: some View {
         NavigationStack {
             content
-                .navigationTitle(Constants.Category.title)
-                .navigationBarTitleDisplayMode(.inline)
+                .toolbarVisibility(.hidden, for: .navigationBar)
                 .task { await viewModel.loadIfNeeded() }
         }
     }
