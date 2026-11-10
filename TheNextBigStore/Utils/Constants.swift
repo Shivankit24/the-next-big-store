@@ -44,4 +44,10 @@ nonisolated struct Constants {
         static let home = "Home"
         static let categories = "Categories"
     }
+
+    nonisolated struct Search {
+        static let placeholder = "Search products"
+        static let clearLabel = "Clear search"
+        static let searchLabel = "Search"
+    }
 }
