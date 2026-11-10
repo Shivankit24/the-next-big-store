@@ -24,14 +24,14 @@ struct CategoryViewModelTests {
         return viewModel
     }
 
-    @Test func startsIdleWithNothingExpanded() {
+    @Test func startsIdleWithNothingSelected() {
         let viewModel = CategoryViewModel(repository: StubProductRepository(result: .success([])))
 
         #expect(viewModel.state == .idle)
-        #expect(viewModel.expandedCategoryID == nil)
+        #expect(viewModel.selectedCategoryID == nil)
     }
 
-    @Test func loadGroupsByCategoryAndExpandsTheFirst() async {
+    @Test func loadGroupsByCategoryAndSelectsTheFirst() async {
         let viewModel = await makeLoadedViewModel()
 
         guard case .loaded(let sections) = viewModel.state else {
@@ -39,25 +39,25 @@ struct CategoryViewModelTests {
             return
         }
         #expect(sections.map(\.id) == ["electronics", "jewelery", "men's clothing"])
-        #expect(viewModel.expandedCategoryID == "electronics")
-        #expect(viewModel.isExpanded("electronics"))
+        #expect(viewModel.selectedCategoryID == "electronics")
+        #expect(viewModel.isSelected("electronics"))
     }
 
-    @Test func selectingACategoryCollapsesThePreviousOne() async {
+    @Test func selectingACategoryReplacesThePreviousSelection() async {
         let viewModel = await makeLoadedViewModel()
 
         viewModel.select("men's clothing")
 
-        #expect(viewModel.isExpanded("men's clothing"))
-        #expect(!viewModel.isExpanded("electronics"))
+        #expect(viewModel.isSelected("men's clothing"))
+        #expect(!viewModel.isSelected("electronics"))
     }
 
-    @Test func selectingTheExpandedCategoryKeepsItExpanded() async {
+    @Test func selectingTheSelectedCategoryKeepsItSelected() async {
         let viewModel = await makeLoadedViewModel()
 
         viewModel.select("electronics")
 
-        #expect(viewModel.isExpanded("electronics"))
+        #expect(viewModel.isSelected("electronics"))
     }
 
     @Test func selectingUnknownCategoryIsIgnored() async {
@@ -65,7 +65,7 @@ struct CategoryViewModelTests {
 
         viewModel.select("toys")
 
-        #expect(viewModel.expandedCategoryID == "electronics")
+        #expect(viewModel.selectedCategoryID == "electronics")
     }
 
     @Test func reloadKeepsTheSelectedCategory() async {
@@ -74,7 +74,7 @@ struct CategoryViewModelTests {
 
         await viewModel.load()
 
-        #expect(viewModel.expandedCategoryID == "jewelery")
+        #expect(viewModel.selectedCategoryID == "jewelery")
     }
 
     @Test func loadFailureExposesErrorMessage() async {
@@ -83,6 +83,6 @@ struct CategoryViewModelTests {
         await viewModel.load()
 
         #expect(viewModel.state == .failed(NetworkError.badStatus(500).localizedDescription))
-        #expect(viewModel.expandedCategoryID == nil)
+        #expect(viewModel.selectedCategoryID == nil)
     }
 }

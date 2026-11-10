@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-/// Category page: one sticky row per category, exactly one expanded at a time.
+/// Category page: a chip bar of every category pinned above the selected category's products.
 struct CategoryView: View {
     @State private var viewModel: CategoryViewModel
 
@@ -19,6 +19,7 @@ struct CategoryView: View {
         NavigationStack {
             content
                 .navigationTitle(Constants.Category.title)
+                .navigationBarTitleDisplayMode(.inline)
                 .task { await viewModel.loadIfNeeded() }
         }
     }
@@ -30,7 +31,7 @@ struct CategoryView: View {
             ProgressView()
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
         case .loaded(let sections):
-            categoryList(sections)
+            categoryContent(sections)
         case .failed(let message):
             ContentUnavailableView {
                 Label(Constants.Home.errorTitle, systemImage: "wifi.exclamationmark")
@@ -44,37 +45,27 @@ struct CategoryView: View {
         }
     }
 
-    private func categoryList(_ sections: [CategorySection]) -> some View {
-        ScrollViewReader { proxy in
-            ScrollView {
-                LazyVStack(spacing: 0, pinnedViews: [.sectionHeaders]) {
-                    ForEach(sections) { section in
-                        Section {
-                            if viewModel.isExpanded(section.id) {
-                                CategoryProductsView(section: section)
-                                    .transition(.opacity)
-                            }
-                        } header: {
-                            CategoryHeaderRow(
-                                title: section.name,
-                                productCount: section.productCount,
-                                isExpanded: viewModel.isExpanded(section.id)
-                            ) {
-                                withAnimation(.snappy(duration: 0.3)) {
-                                    viewModel.select(section.id)
-                                }
-                            }
-                            .id(section.id)
-                        }
-                    }
+    private func categoryContent(_ sections: [CategorySection]) -> some View {
+        VStack(spacing: 0) {
+            CategoryChipBar(
+                items: sections.map { CategoryChipBar.Item(id: $0.id, title: $0.name) },
+                selectedID: viewModel.selectedCategoryID
+            ) { id in
+                withAnimation(.snappy(duration: 0.25)) {
+                    viewModel.select(id)
                 }
             }
-            // Bring the newly opened category's row to the top once the layout has updated,
-            // so the open category is always where the user is looking.
-            .onChange(of: viewModel.expandedCategoryID) { _, newID in
-                guard let newID else { return }
-                withAnimation(.snappy(duration: 0.3)) {
-                    proxy.scrollTo(newID, anchor: .top)
+
+            // A ZStack, so during the cross-fade the outgoing and incoming categories overlap
+            // instead of stacking and making the page jump.
+            ZStack {
+                if let section = sections.first(where: { viewModel.isSelected($0.id) }) {
+                    ScrollView {
+                        CategoryProductsView(section: section)
+                    }
+                    // A new identity per category gives each one a fresh scroll position at the top.
+                    .id(section.id)
+                    .transition(.opacity)
                 }
             }
         }
