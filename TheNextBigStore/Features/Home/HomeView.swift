@@ -11,8 +11,6 @@ import SwiftUI
 struct HomeView: View {
     @State private var viewModel: HomeViewModel
 
-    private let columns = [GridItem(.adaptive(minimum: 160), spacing: 16, alignment: .top)]
-
     init(viewModel: HomeViewModel) {
         _viewModel = State(initialValue: viewModel)
     }
@@ -33,12 +31,8 @@ struct HomeView: View {
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
         case .loaded(let products):
             ScrollView {
-                LazyVGrid(columns: columns, spacing: 16) {
-                    ForEach(products) { product in
-                        ProductTileView(product: product)
-                    }
-                }
-                .padding()
+                ProductGridView(products: products)
+                    .padding(Theme.Spacing.l)
             }
         case .failed(let message):
             ContentUnavailableView {
