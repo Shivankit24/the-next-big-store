@@ -31,8 +31,8 @@ extension Sequence where Element == Product {
                 let ranked = products.topRated(limit: products.count)
                 return CategorySection(
                     id: category,
-                    topRated: Array(ranked.prefix(max(0, topRatedLimit))),
-                    additional: Array(ranked.dropFirst(max(0, topRatedLimit)))
+                    topRated: Array(ranked.prefix(Swift.max(0, topRatedLimit))),
+                    additional: Array(ranked.dropFirst(Swift.max(0, topRatedLimit)))
                 )
             }
     }

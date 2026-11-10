@@ -5,7 +5,7 @@
 //  Created by Shivankit on 10/11/26.
 //
 
-import Observation
+import Foundation
 
 /// Drives the Category page: loads the catalogue grouped by category and tracks which
 /// single category is expanded. Exactly one is always expanded once data has loaded.
