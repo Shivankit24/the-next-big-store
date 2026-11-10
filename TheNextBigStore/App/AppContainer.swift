@@ -27,4 +27,8 @@ struct AppContainer {
     func makeCategoryViewModel() -> CategoryViewModel {
         CategoryViewModel(repository: productRepository)
     }
+
+    func makeSearchViewModel() -> SearchViewModel {
+        SearchViewModel(repository: productRepository)
+    }
 }
