@@ -16,7 +16,10 @@ struct ProductGridView: View {
     var body: some View {
         LazyVGrid(columns: columns, spacing: Theme.Spacing.l) {
             ForEach(products) { product in
-                ProductTileView(product: product)
+                NavigationLink(value: product) {
+                    ProductTileView(product: product)
+                }
+                .buttonStyle(.plain)
             }
         }
     }

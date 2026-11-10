@@ -19,21 +19,26 @@ struct SearchView: View {
 
     var body: some View {
         @Bindable var viewModel = viewModel
-        VStack(spacing: 0) {
-            HStack(spacing: Theme.Spacing.m) {
-                SearchBarView(
-                    text: $viewModel.query,
-                    canSearch: viewModel.canSearch,
-                    onSearch: { Task { await viewModel.search() } },
-                    onClear: viewModel.clear
-                )
-                Button(Constants.Search.cancel) { dismiss() }
-            }
-            .padding(.horizontal, Theme.Spacing.l)
-            .padding(.vertical, Theme.Spacing.s)
+        // Search is presented full screen, outside the tabs, so it needs its own stack to open products.
+        NavigationStack {
+            VStack(spacing: 0) {
+                HStack(spacing: Theme.Spacing.m) {
+                    SearchBarView(
+                        text: $viewModel.query,
+                        canSearch: viewModel.canSearch,
+                        onSearch: { Task { await viewModel.search() } },
+                        onClear: viewModel.clear
+                    )
+                    Button(Constants.Search.cancel) { dismiss() }
+                }
+                .padding(.horizontal, Theme.Spacing.l)
+                .padding(.vertical, Theme.Spacing.s)
 
-            Divider()
-            content
+                Divider()
+                content
+            }
+            .toolbarVisibility(.hidden, for: .navigationBar)
+            .productDetailsDestination()
         }
     }
 

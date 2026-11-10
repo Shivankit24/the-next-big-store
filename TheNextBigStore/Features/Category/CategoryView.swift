@@ -19,6 +19,7 @@ struct CategoryView: View {
         NavigationStack {
             content
                 .toolbarVisibility(.hidden, for: .navigationBar)
+                .productDetailsDestination()
                 .task { await viewModel.loadIfNeeded() }
         }
     }
