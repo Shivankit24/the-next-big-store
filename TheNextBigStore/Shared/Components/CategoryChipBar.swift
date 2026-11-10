@@ -54,8 +54,8 @@ struct CategoryChipBar: View {
                 .lineLimit(1)
                 .padding(.horizontal, Theme.Spacing.l)
                 .padding(.vertical, Theme.Spacing.s)
-                .foregroundStyle(isSelected ? AnyShapeStyle(.white) : AnyShapeStyle(.primary))
-                .background(isSelected ? AnyShapeStyle(.tint) : AnyShapeStyle(.fill.tertiary), in: Capsule())
+                .foregroundStyle(isSelected ? Color.white : Color.primary)
+                .background(isSelected ? Color.accentColor : Color(.tertiarySystemFill), in: Capsule())
                 .contentShape(Capsule())
         }
         .buttonStyle(.plain)
