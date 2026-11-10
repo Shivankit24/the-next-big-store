@@ -12,28 +12,27 @@ import Testing
 
 @Suite
 struct RemoteProductRepositoryTests {
-    @Test func fetchProductsRequestsProductList() async throws {
-        let expected = [Product.fixture(id: 1), Product.fixture(id: 2)]
+    @Test func fetchProductsRequestsListAndMapsToDomain() async throws {
         let client = StubHTTPClient { endpoint in
             guard endpoint.path == "/products" else { throw NetworkError.badStatus(404) }
-            return expected
+            return [ProductDTO.fixture(id: 1), ProductDTO.fixture(id: 2, title: "Second ")]
         }
 
         let products = try await RemoteProductRepository(client: client).fetchProducts()
 
-        #expect(products == expected)
+        #expect(products.map(\.id) == [1, 2])
+        #expect(products[1].title == "Second")
     }
 
-    @Test func fetchProductRequestsProductById() async throws {
-        let expected = Product.fixture(id: 7)
+    @Test func fetchProductRequestsProductByIdAndMapsToDomain() async throws {
         let client = StubHTTPClient { endpoint in
             guard endpoint.path == "/products/7" else { throw NetworkError.badStatus(404) }
-            return expected
+            return ProductDTO.fixture(id: 7)
         }
 
         let product = try await RemoteProductRepository(client: client).fetchProduct(id: 7)
 
-        #expect(product == expected)
+        #expect(product.id == 7)
     }
 
     @Test func propagatesClientErrors() async {

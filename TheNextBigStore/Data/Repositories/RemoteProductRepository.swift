@@ -16,10 +16,12 @@ nonisolated struct RemoteProductRepository: ProductRepository {
     }
 
     func fetchProducts() async throws -> [Product] {
-        try await client.send(.products)
+        let dtos: [ProductDTO] = try await client.send(.products)
+        return dtos.map { $0.asProduct() }
     }
 
     func fetchProduct(id: Int) async throws -> Product {
-        try await client.send(.product(id: id))
+        let dto: ProductDTO = try await client.send(.product(id: id))
+        return dto.asProduct()
     }
 }

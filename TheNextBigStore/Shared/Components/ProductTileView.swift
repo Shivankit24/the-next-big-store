@@ -42,7 +42,7 @@ struct ProductTileView: View {
 
     private var details: some View {
         VStack(alignment: .leading, spacing: Theme.Spacing.xs) {
-            Text(product.title.trimmingCharacters(in: .whitespaces))
+            Text(product.title)
                 .font(.subheadline.weight(.semibold))
                 .lineLimit(2, reservesSpace: true)
                 .multilineTextAlignment(.leading)

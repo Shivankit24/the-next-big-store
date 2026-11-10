@@ -24,7 +24,7 @@ extension Product {
             price: price,
             description: "Description",
             category: category,
-            image: "https://example.com/\(id).png",
+            imageURL: URL(string: "https://example.com/\(id).png"),
             rating: Rating(rate: rate, count: count)
         )
     }
