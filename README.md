@@ -24,34 +24,50 @@ It is built as a foundation rather than a throwaway prototype: the data source, 
 
 No third-party iOS dependencies, paid services, accounts or secrets are needed.
 
-## Quick start (about 5 minutes)
+## Quick start: run the app step by step (about 10 minutes)
 
-The app never calls FakeStoreAPI directly. It talks to a small local Node/TypeScript server that proxies it, so start the server first.
+The app shows products that come from a small **local server** (the "mock server") running on your own Mac. So there are two things to start, **in this order**: first the server, then the app. No accounts or payments are needed.
 
-**1. Start the backend**
+### One-time setup
 
-```sh
-cd ios-mock-server
-cp .env.example .env     # optional: defaults work without it
-npm install
-npm start
-```
+1. **Install Xcode** from the Mac App Store (free). Open it once so it finishes installing.
+2. **Install Node.js** (version 20.12 or newer) from [nodejs.org](https://nodejs.org) using the "LTS" download. To check it worked, open the **Terminal** app (press Cmd+Space, type `Terminal`, press Enter) and run `node -v`. It should print a version such as `v22.x.x`.
+3. **Get this project** onto your Mac (clone the repository or download it as a ZIP and unzip it).
 
-You should see `Proxy server running smoothly at http://localhost:3000`. Leave it running. Check it in a browser or terminal:
+### Step 1: start the server
 
-```sh
-curl http://localhost:3000/products
-```
+1. In **Terminal**, go into the server folder. Type `cd ` (with a space), drag the `ios-mock-server` folder from Finder into the Terminal window, then press Enter.
+2. Run these commands, one at a time, pressing Enter after each:
 
-**2. Run the app**
+   ```sh
+   cp .env.example .env
+   npm install
+   npm start
+   ```
 
-1. Open `TheNextBigStore.xcodeproj` in Xcode.
-2. Select the **TheNextBigStore** scheme and any iPhone simulator.
-3. Press **Run** (Cmd+R).
+   - `cp .env.example .env` creates your settings file. You only need to do this once, and the defaults work as they are.
+   - `npm install` downloads what the server needs. It takes a minute and only needs to be run the first time.
+   - `npm start` starts the server.
 
-The simulator reaches the server at `http://localhost:3000`, which is the app's default (`APIConfiguration.local`). `Info.plist` allows plain HTTP to local addresses for this.
+3. You know it worked when Terminal says: `Proxy server running smoothly at http://localhost:3000`.
+4. **Leave this Terminal window open.** The server only runs while the window is open. Closing it, or pressing Ctrl+C, stops the server.
 
-If the app shows an error state instead of products, the server is not running or not reachable (see [Troubleshooting](#troubleshooting)). SwiftUI previews work without the server, using sample data.
+Optional check: open <http://localhost:3000/products> in a web browser. If you see a long list of products, the server is working.
+
+### Step 2: run the app
+
+1. In Finder, double-click `TheNextBigStore.xcodeproj` to open it in Xcode.
+2. At the top of the Xcode window, make sure the scheme says **TheNextBigStore**, and pick any iPhone (for example "iPhone 16") as the device.
+3. Press the **Play** button (or Cmd+R). The first build takes a minute, then the iPhone Simulator opens and shows the store.
+
+The app finds the server by itself at `http://localhost:3000`, so there is nothing to type in.
+
+### Stopping and starting again
+
+- To stop: press the **Stop** button in Xcode, and press **Ctrl+C** in the Terminal window running the server.
+- To start again later: only repeat Step 1 using `npm start` (skip `cp` and `npm install`), then press Play in Xcode.
+
+If the app shows an error instead of products, the server is not running. Go back to Step 1, then use the retry button in the app. More help is in [Troubleshooting](#troubleshooting). SwiftUI previews in Xcode work without the server, using sample data.
 
 ## Backend configuration
 
@@ -88,7 +104,8 @@ Tests use Swift Testing and cover networking, repositories, models, view models 
 | Symptom | Likely cause and fix |
 | --- | --- |
 | App shows an error / no products | Server not running. Start it with `npm start` in `ios-mock-server` and use the retry action in the app. |
-| `npm start` fails with an unknown flag or `loadEnvFile` error | Node is older than 20.12. Upgrade Node. |
+| `npm: command not found` or `node: command not found` | Node.js is not installed. Install it from nodejs.org, then reopen Terminal. |
+| `npm start` fails with a `loadEnvFile` error | Node is older than 20.12. Upgrade Node. |
 | `Address already in use` | Something else uses port 3000. Stop it, or set another `PORT` in `.env` and update `APIConfiguration.swift`. |
 | Server runs but products never arrive | The machine cannot reach `fakestoreapi.com`. Check the network, or the `FAKE_STORE_API_BASE_URL` value. |
 | `node_modules` errors after copying the project between machines | Delete `ios-mock-server/node_modules` and run `npm install` again. |
