@@ -74,4 +74,12 @@ nonisolated struct Constants {
             "We have received your enquiry about \(productTitle). Our team will be in touch soon."
         }
     }
+
+    nonisolated struct ProductDetails {
+        static let description = "Description"
+        static let enquire = "Enquire"
+        static func ratingValue(_ rate: Double) -> String {
+            "\(rate.formatted(.number.precision(.fractionLength(1)))) out of \(Constants.Rating.maxStars)"
+        }
+    }
 }
