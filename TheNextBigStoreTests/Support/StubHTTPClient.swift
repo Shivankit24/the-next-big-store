@@ -20,4 +20,8 @@ struct StubHTTPClient: HTTPClient {
         }
         return value
     }
+
+    func send(_ endpoint: Endpoint) async throws {
+        _ = try responder(endpoint)
+    }
 }

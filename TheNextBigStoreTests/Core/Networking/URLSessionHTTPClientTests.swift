@@ -74,4 +74,18 @@ struct URLSessionHTTPClientTests {
             let _: [Item] = try await client.send(Endpoint(path: "/items"))
         }
     }
+
+    @Test func sendWithoutResponseSucceedsOnEmptySuccessBody() async throws {
+        let client = makeClient(status: 204, body: "")
+
+        try await client.send(Endpoint(path: "/items"))
+    }
+
+    @Test func sendWithoutResponseStillThrowsOnBadStatus() async {
+        let client = makeClient(status: 500, body: "")
+
+        await #expect(throws: NetworkError.badStatus(500)) {
+            try await client.send(Endpoint(path: "/items"))
+        }
+    }
 }
