@@ -1,10 +1,12 @@
 import express, { type Request, type Response } from 'express';
 import axios from 'axios';
+import { fileURLToPath } from 'node:url';
 
-// Load optional local configuration from .env (see .env.example). Real
-// environment variables win, and defaults below keep it running without a file.
+// Read configuration from the .env file next to this script (see .env.example),
+// wherever the server is started from. Real environment variables win, and the
+// defaults below keep it running without a file.
 try {
-    process.loadEnvFile();
+    process.loadEnvFile(fileURLToPath(new URL('.env', import.meta.url)));
 } catch {
     // No .env file: fall back to defaults.
 }
