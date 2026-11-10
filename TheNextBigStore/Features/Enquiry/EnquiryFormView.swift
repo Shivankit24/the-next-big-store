@@ -8,7 +8,8 @@
 import SwiftUI
 
 /// The enquiry form: name, email or Australian phone number, and the enquiry text, all
-/// mandatory. Shows a thank-you message once the enquiry has been delivered.
+/// mandatory. Submit stays disabled until the form is valid. Shows a thank-you message once the
+/// enquiry has been delivered.
 struct EnquiryFormView: View {
     @State private var viewModel: EnquiryViewModel
     @Environment(\.dismiss) private var dismiss
@@ -92,6 +93,10 @@ struct EnquiryFormView: View {
             }
         }
         .scrollDismissesKeyboard(.interactively)
+        // Leaving a field is what lets its error show.
+        .onChange(of: focusedField) { previous, _ in
+            if let previous { viewModel.touch(previous) }
+        }
         .safeAreaInset(edge: .bottom, spacing: 0) { submitBar }
     }
 
@@ -104,7 +109,7 @@ struct EnquiryFormView: View {
                     .multilineTextAlignment(.center)
             }
             Button {
-                Task { await submit() }
+                Task { await viewModel.submit() }
             } label: {
                 Group {
                     if viewModel.isSubmitting {
@@ -119,18 +124,10 @@ struct EnquiryFormView: View {
             }
             .buttonStyle(.borderedProminent)
             .controlSize(.large)
-            .disabled(viewModel.isSubmitting)
+            .disabled(!viewModel.canSubmit)
         }
         .padding(Theme.Spacing.l)
         .background(.bar)
-    }
-
-    private func submit() async {
-        await viewModel.submit()
-        // Take the user straight to whatever needs fixing.
-        if let field = viewModel.firstInvalidField {
-            focusedField = field
-        }
     }
 
     // MARK: Thank you
