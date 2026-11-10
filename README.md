@@ -18,19 +18,60 @@ It is built as a foundation rather than a throwaway prototype: the data source, 
 
 ## Requirements
 
-- macOS with **Xcode** (the project uses folder-synced targets and Swift Testing, so use a recent release)
-- An **iOS Simulator** (iPhone; app deployment target is iOS 18.6)
-- **Node.js** to run the local backend (see [Backend](#backend))
+- macOS with **Xcode** (recent release; the project uses folder-synced targets and Swift Testing)
+- An **iOS Simulator** (iPhone; deployment target iOS 18.6)
+- **Node.js 20.12 or newer** with npm, for the local backend
 
-No third-party dependencies, paid services or secrets are needed.
+No third-party iOS dependencies, paid services, accounts or secrets are needed.
 
-## Run the app
+## Quick start (about 5 minutes)
+
+The app never calls FakeStoreAPI directly. It talks to a small local Node/TypeScript server that proxies it, so start the server first.
+
+**1. Start the backend**
+
+```sh
+cd ios-mock-server
+cp .env.example .env     # optional: defaults work without it
+npm install
+npm start
+```
+
+You should see `Proxy server running smoothly at http://localhost:3000`. Leave it running. Check it in a browser or terminal:
+
+```sh
+curl http://localhost:3000/products
+```
+
+**2. Run the app**
 
 1. Open `TheNextBigStore.xcodeproj` in Xcode.
-2. Select the **TheNextBigStore** scheme and an iPhone simulator.
-3. Start the backend (below), then press **Run** (Cmd+R).
+2. Select the **TheNextBigStore** scheme and any iPhone simulator.
+3. Press **Run** (Cmd+R).
 
-SwiftUI previews work without a backend, using sample data.
+The simulator reaches the server at `http://localhost:3000`, which is the app's default (`APIConfiguration.local`). `Info.plist` allows plain HTTP to local addresses for this.
+
+If the app shows an error state instead of products, the server is not running or not reachable (see [Troubleshooting](#troubleshooting)). SwiftUI previews work without the server, using sample data.
+
+## Backend configuration
+
+Settings live in `ios-mock-server/.env`, which is read directly by `server.ts` and is git-ignored. Copy `.env.example` to create it; never commit secrets.
+
+| Variable | Default | Purpose |
+| --- | --- | --- |
+| `PORT` | `3000` | Port the server listens on |
+| `FAKE_STORE_API_BASE_URL` | `https://fakestoreapi.com` | Upstream product API it proxies to |
+
+Real environment variables take precedence over the file, and if there is no `.env` the defaults above are used. If you change `PORT`, update the base URL in `TheNextBigStore/Core/Networking/APIConfiguration.swift` to match.
+
+Endpoints:
+
+| Method | Path | Purpose |
+| --- | --- | --- |
+| GET | `/products` | List all products |
+| GET | `/products/:id` | One product (404 if unknown) |
+
+Enquiries are a placeholder in this MVP, so the server has no enquiry endpoint yet (see [DECISIONS.md](DECISIONS.md)).
 
 ## Run the tests
 
@@ -40,21 +81,17 @@ Press **Cmd+U** in Xcode, or from a terminal:
 xcodebuild test -scheme TheNextBigStore -destination 'platform=iOS Simulator,name=<simulator name>'
 ```
 
-Tests use Swift Testing and cover networking, repositories, models, view models and formatters, using stubs instead of the network.
+Tests use Swift Testing and cover networking, repositories, models, view models and formatters, with stubs instead of the network, so the server is not needed.
 
-## Backend
+## Troubleshooting
 
-The app never calls FakeStoreAPI directly. It talks to a local Node/TypeScript server (`server.ts`) that proxies it. The base URL is `http://localhost:3000` (`APIConfiguration.local`), and `Info.plist` allows local HTTP via `NSAllowsLocalNetworking`.
-
-The app expects:
-
-| Method | Path | Purpose |
-| --- | --- | --- |
-| GET | `/products` | List all products |
-| GET | `/products/{id}` | One product |
-| POST | `/enquiries` | Only used once `RemoteEnquiryRepository` is switched on |
-
-> **Status:** the server, its `package.json` and the example env file (`.env.example`) are not in the repository yet. Until they are added, the app launches into its error state. This section will gain the exact start commands when they land.
+| Symptom | Likely cause and fix |
+| --- | --- |
+| App shows an error / no products | Server not running. Start it with `npm start` in `ios-mock-server` and use the retry action in the app. |
+| `npm start` fails with an unknown flag or `loadEnvFile` error | Node is older than 20.12. Upgrade Node. |
+| `Address already in use` | Something else uses port 3000. Stop it, or set another `PORT` in `.env` and update `APIConfiguration.swift`. |
+| Server runs but products never arrive | The machine cannot reach `fakestoreapi.com`. Check the network, or the `FAKE_STORE_API_BASE_URL` value. |
+| `node_modules` errors after copying the project between machines | Delete `ios-mock-server/node_modules` and run `npm install` again. |
 
 ## Architecture
 
@@ -70,6 +107,7 @@ TheNextBigStore/
 ├── Shared/     Reusable components and theme
 └── Utils/      Constants, formatters
 TheNextBigStoreTests/   Mirrors the source tree, with stubs in Support/
+ios-mock-server/        Local Node/TypeScript proxy to FakeStoreAPI (.env.example, server.ts)
 ```
 
 Where to change things:
@@ -78,6 +116,12 @@ Where to change things:
 - **Deliver enquiries for real:** in `AppContainer`, replace `PlaceholderEnquiryRepository()` with `RemoteEnquiryRepository`, which posts to `/enquiries`. A different email provider would be another `EnquiryRepository` implementation.
 - **Restyle:** colours, spacing and fonts are in `Shared/Theme`; user-facing strings and numbers are in `Utils/Constants.swift`.
 - **Hide the search bar on a screen:** one case in `AppTab.showsSearchBar`.
+
+## More documentation
+
+- [DECISIONS.md](DECISIONS.md): assumptions, simplifications, how the design grows, next steps
+- [AI_USAGE.md](AI_USAGE.md): how AI was used
+- [TIME_SPENT.md](TIME_SPENT.md): time spent
 
 ## Conventions
 
