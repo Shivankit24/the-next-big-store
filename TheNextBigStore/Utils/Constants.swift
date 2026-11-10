@@ -38,8 +38,6 @@ nonisolated struct Constants {
         static let title = "Categories"
         static let topRated = "Top Rated"
         static let moreProducts = "More Products"
-        static let expanded = "Expanded"
-        static let collapsed = "Collapsed"
     }
 
     nonisolated struct Tabs {
