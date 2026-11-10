@@ -10,9 +10,7 @@ import SwiftUI
 extension EnvironmentValues {
     /// Builds the enquiry form's view model for a product. Injected once at the app root, so
     /// product pages can offer an enquiry without knowing how it is delivered.
-    @Entry var makeEnquiryViewModel: (Product) -> EnquiryViewModel = { product in
-        EnquiryViewModel(product: product, repository: UnconfiguredEnquiryRepository())
-    }
+    @Entry var enquiryViewModelFactory = EnquiryViewModelFactory(repository: UnconfiguredEnquiryRepository())
 }
 
 /// Fallback used only if the app root forgets to inject a real repository: fails loudly in the

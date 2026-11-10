@@ -11,7 +11,7 @@ import SwiftUI
 struct ProductDetailsView: View {
     let product: Product
 
-    @Environment(\.makeEnquiryViewModel) private var makeEnquiryViewModel
+    @Environment(\.enquiryViewModelFactory) private var enquiryViewModelFactory
     @State private var isEnquiryPresented = false
 
     var body: some View {
@@ -55,7 +55,7 @@ struct ProductDetailsView: View {
         .toolbarVisibility(.visible, for: .navigationBar)
         .navigationBarTitleDisplayMode(.inline)
         .sheet(isPresented: $isEnquiryPresented) {
-            EnquiryFormView(viewModel: makeEnquiryViewModel(product))
+            EnquiryFormView(viewModel: enquiryViewModelFactory.make(for: product))
         }
     }
 

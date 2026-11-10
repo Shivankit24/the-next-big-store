@@ -19,14 +19,14 @@ struct RootView: View {
     @State private var isSearchPresented = false
     private let imageLoader: any ImageLoading
     private let makeSearchViewModel: () -> SearchViewModel
-    private let makeEnquiryViewModel: (Product) -> EnquiryViewModel
+    private let enquiryViewModelFactory: EnquiryViewModelFactory
 
     init(container: AppContainer) {
         _homeViewModel = State(initialValue: container.makeHomeViewModel())
         _categoryViewModel = State(initialValue: container.makeCategoryViewModel())
         imageLoader = container.imageLoader
         makeSearchViewModel = container.makeSearchViewModel
-        makeEnquiryViewModel = container.makeEnquiryViewModel(for:)
+        enquiryViewModelFactory = container.makeEnquiryViewModelFactory()
     }
 
     var body: some View {
@@ -50,7 +50,7 @@ struct RootView: View {
         }
         .animation(.snappy(duration: 0.25), value: selectedTab.showsSearchBar)
         .environment(\.imageLoader, imageLoader)
-        .environment(\.makeEnquiryViewModel, makeEnquiryViewModel)
+        .environment(\.enquiryViewModelFactory, enquiryViewModelFactory)
         .fullScreenCover(isPresented: $isSearchPresented) {
             SearchView(viewModel: makeSearchViewModel())
         }

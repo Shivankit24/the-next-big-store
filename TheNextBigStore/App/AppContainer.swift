@@ -34,7 +34,7 @@ struct AppContainer {
         SearchViewModel(repository: productRepository)
     }
 
-    func makeEnquiryViewModel(for product: Product) -> EnquiryViewModel {
-        EnquiryViewModel(product: product, repository: enquiryRepository)
+    func makeEnquiryViewModelFactory() -> EnquiryViewModelFactory {
+        EnquiryViewModelFactory(repository: enquiryRepository)
     }
 }
