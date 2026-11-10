@@ -18,9 +18,14 @@ struct EnquiryViewModelTests {
         EnquiryViewModel(product: .fixture(id: 9, title: "Slim Shirt"), repository: repository)
     }
 
-    private func fill(_ viewModel: EnquiryViewModel, contact: String = "jane@example.com") {
+    private func fill(
+        _ viewModel: EnquiryViewModel,
+        method: EnquiryViewModel.ContactMethod = .email,
+        contact: String = "jane@example.com"
+    ) {
         viewModel.name = "  Jane Doe "
-        viewModel.contact = contact
+        viewModel.selectContactMethod(method)
+        viewModel.updateContact(contact)
         viewModel.message = " Is this available in blue? "
     }
 
@@ -42,7 +47,7 @@ struct EnquiryViewModelTests {
         viewModel.name = "Jane"
         #expect(!viewModel.canSubmit)
 
-        viewModel.contact = "jane@example.com"
+        viewModel.updateContact("jane@example.com")
         #expect(!viewModel.canSubmit)
 
         viewModel.message = "Hello"
@@ -52,35 +57,87 @@ struct EnquiryViewModelTests {
     @Test func whitespaceOnlyFieldsDoNotCount() {
         let viewModel = makeViewModel()
         viewModel.name = "   "
-        viewModel.contact = "jane@example.com"
+        viewModel.updateContact("jane@example.com")
         viewModel.message = "\n"
 
         #expect(!viewModel.isValid)
     }
 
-    @Test func invalidContactKeepsSubmitDisabled() {
+    @Test func invalidEmailKeepsSubmitDisabled() {
         let viewModel = makeViewModel()
-        fill(viewModel, contact: "12345")
+        fill(viewModel, contact: "jane@")
 
         #expect(!viewModel.canSubmit)
     }
 
-    @Test func australianPhoneNumberIsAcceptedAsContact() {
+    @Test func tenDigitPhoneNumberIsAccepted() {
         let viewModel = makeViewModel()
-        fill(viewModel, contact: "0412 345 678")
+        fill(viewModel, method: .phone, contact: "0412 345 678")
 
+        #expect(viewModel.contact == "0412345678")
         #expect(viewModel.canSubmit)
     }
 
-    @Test func errorsStayHiddenUntilTheFieldHasBeenLeft() {
+    @Test func incompleteOrNonAustralianPhoneNumbersAreRejected() {
         let viewModel = makeViewModel()
-        viewModel.contact = "12345"
-        #expect(viewModel.contactError == nil)
 
+        fill(viewModel, method: .phone, contact: "04123")
+        #expect(!viewModel.canSubmit)
+
+        viewModel.updateContact("0112345678")
+        #expect(!viewModel.canSubmit)
+    }
+
+    @Test func phoneInputIsReducedToLocalDigits() {
+        let viewModel = makeViewModel()
+        viewModel.selectContactMethod(.phone)
+
+        viewModel.updateContact("+61 412-345-678")
+
+        #expect(viewModel.contact == "0412345678")
+    }
+
+    @Test func emailModeRejectsAPhoneNumber() {
+        let viewModel = makeViewModel()
+        fill(viewModel, contact: "0412345678")
+
+        #expect(!viewModel.canSubmit)
+    }
+
+    @Test func phoneModeRejectsAnEmailAddress() {
+        let viewModel = makeViewModel()
+        fill(viewModel, method: .phone, contact: "jane@example.com")
+
+        #expect(viewModel.contact.isEmpty)
+        #expect(!viewModel.canSubmit)
+    }
+
+    @Test func switchingMethodClearsTheContactAndItsError() {
+        let viewModel = makeViewModel()
+        viewModel.updateContact("jane@")
         viewModel.touch(.contact)
+        #expect(viewModel.contactError == Constants.Enquiry.emailInvalid)
 
-        #expect(viewModel.contactError == Constants.Enquiry.contactInvalid)
-        #expect(viewModel.nameError == nil)
+        viewModel.selectContactMethod(.phone)
+
+        #expect(viewModel.contact.isEmpty)
+        #expect(viewModel.contactError == nil)
+    }
+
+    @Test func contactErrorsMatchTheChosenMethod() {
+        let viewModel = makeViewModel()
+        viewModel.touch(.contact)
+        #expect(viewModel.contactError == Constants.Enquiry.emailRequired)
+
+        viewModel.updateContact("jane@")
+        #expect(viewModel.contactError == Constants.Enquiry.emailInvalid)
+
+        viewModel.selectContactMethod(.phone)
+        viewModel.touch(.contact)
+        #expect(viewModel.contactError == Constants.Enquiry.phoneRequired)
+
+        viewModel.updateContact("04123")
+        #expect(viewModel.contactError == Constants.Enquiry.phoneInvalid)
     }
 
     @Test func leavingAnEmptyFieldExplainsThatItIsRequired() {
@@ -90,7 +147,7 @@ struct EnquiryViewModelTests {
         viewModel.touch(.message)
 
         #expect(viewModel.nameError == Constants.Enquiry.nameRequired)
-        #expect(viewModel.contactError == Constants.Enquiry.contactRequired)
+        #expect(viewModel.contactError == Constants.Enquiry.emailRequired)
         #expect(viewModel.messageError == Constants.Enquiry.messageRequired)
     }
 
@@ -137,7 +194,7 @@ struct EnquiryViewModelTests {
     @Test func phoneContactIsSentInInternationalFormat() async {
         let repository = StubEnquiryRepository()
         let viewModel = makeViewModel(repository: repository)
-        fill(viewModel, contact: "0412 345 678")
+        fill(viewModel, method: .phone, contact: "0412 345 678")
 
         await viewModel.submit()
 

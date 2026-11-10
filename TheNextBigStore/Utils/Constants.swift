@@ -58,8 +58,10 @@ nonisolated struct Constants {
 
     nonisolated struct Enquiry {
         static let nameRequired = "Please enter your name."
-        static let contactRequired = "Please enter an email address or phone number."
-        static let contactInvalid = "Enter a valid email address or Australian phone number."
+        static let emailRequired = "Please enter your email address."
+        static let emailInvalid = "Enter a valid email address."
+        static let phoneRequired = "Please enter your phone number."
+        static let phoneInvalid = "Enter a 10-digit Australian phone number, e.g. 0412 345 678."
         static let messageRequired = "Please tell us what you would like to know."
         static let title = "Enquiry"
         static let cancel = "Cancel"

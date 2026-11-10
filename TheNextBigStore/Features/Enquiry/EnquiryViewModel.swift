@@ -8,12 +8,15 @@
 import Foundation
 import Observation
 
-/// Drives the enquiry form. Name, contact (email or Australian phone) and message are all
-/// mandatory, and `canSubmit` stays false until every field is valid. A field's error appears
-/// once the user has left it, and then updates as they type.
+/// Drives the enquiry form. Name, contact and message are all mandatory, and `canSubmit` stays
+/// false until every field is valid. The customer picks how to be reached: by email, or by
+/// phone, where the +61 is fixed in the UI so they only type the 10 digits. A field's error
+/// appears once the user has left it, and then updates as they type.
 @Observable
 final class EnquiryViewModel {
     enum Field: Hashable { case name, contact, message }
+
+    enum ContactMethod: Hashable, CaseIterable { case email, phone }
 
     enum Phase: Equatable {
         case editing
@@ -24,8 +27,9 @@ final class EnquiryViewModel {
 
     let product: Product
     var name = ""
-    var contact = ""
+    private(set) var contact = ""
     var message = ""
+    private(set) var contactMethod: ContactMethod = .email
     private(set) var phase: Phase = .editing
     private(set) var touchedFields: Set<Field> = []
 
@@ -39,7 +43,30 @@ final class EnquiryViewModel {
     // MARK: Validation
 
     var isValid: Bool {
-        !trimmed(name).isEmpty && ContactDetail(parsing: contact) != nil && !trimmed(message).isEmpty
+        !trimmed(name).isEmpty && contactDetail != nil && !trimmed(message).isEmpty
+    }
+
+    /// The contact as typed, valid for the chosen method only: a number typed in Email mode (or an
+    /// address in Phone mode) is not accepted.
+    private var contactDetail: ContactDetail? {
+        guard let detail = ContactDetail(parsing: contact) else { return nil }
+        switch (contactMethod, detail) {
+        case (.email, .email), (.phone, .phone): return detail
+        default: return nil
+        }
+    }
+
+    /// Switches between email and phone, starting the contact field afresh.
+    func selectContactMethod(_ method: ContactMethod) {
+        guard method != contactMethod else { return }
+        contactMethod = method
+        contact = ""
+        touchedFields.remove(.contact)
+    }
+
+    /// Sets the contact from what the user typed. Phone input is reduced to local digits.
+    func updateContact(_ input: String) {
+        contact = contactMethod == .phone ? ContactDetail.sanitizedAustralianDigits(from: input) : input
     }
 
     var isSubmitting: Bool {
@@ -63,8 +90,12 @@ final class EnquiryViewModel {
 
     var contactError: String? {
         guard touchedFields.contains(.contact) else { return nil }
-        if trimmed(contact).isEmpty { return Constants.Enquiry.contactRequired }
-        return ContactDetail(parsing: contact) == nil ? Constants.Enquiry.contactInvalid : nil
+        let isEmail = contactMethod == .email
+        if trimmed(contact).isEmpty {
+            return isEmail ? Constants.Enquiry.emailRequired : Constants.Enquiry.phoneRequired
+        }
+        guard contactDetail == nil else { return nil }
+        return isEmail ? Constants.Enquiry.emailInvalid : Constants.Enquiry.phoneInvalid
     }
 
     var messageError: String? {
@@ -75,7 +106,7 @@ final class EnquiryViewModel {
     // MARK: Submitting
 
     func submit() async {
-        guard canSubmit, let contactDetail = ContactDetail(parsing: contact) else { return }
+        guard canSubmit, let contactDetail else { return }
 
         phase = .submitting
         let enquiry = Enquiry(

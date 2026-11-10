@@ -70,7 +70,10 @@ struct EnquiryFormView: View {
             }
 
             Section {
-                TextField(Constants.Enquiry.contactPlaceholder, text: binding(\.contact))
+                TextField(
+                    Constants.Enquiry.contactPlaceholder,
+                    text: Binding(get: { viewModel.contact }, set: { viewModel.updateContact($0) })
+                )
                     .textInputAutocapitalization(.never)
                     .autocorrectionDisabled()
                     .submitLabel(.next)
