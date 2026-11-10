@@ -27,6 +27,19 @@ nonisolated enum ContactDetail: Equatable, Sendable {
         }
     }
 
+    /// Cleans what a customer types or pastes into a phone field that already shows "+61":
+    /// keeps digits only, turns a pasted "+61 4..." or "0061 4..." back into local "04...", and
+    /// stops at 10 digits, the length of an Australian number written locally.
+    static func sanitizedAustralianDigits(from input: String) -> String {
+        var digits = input.filter { $0.isASCII && $0.isNumber }
+        if digits.hasPrefix("0061"), digits.count > 10 {
+            digits = "0" + String(digits.dropFirst(4))
+        } else if digits.hasPrefix("61"), digits.count > 10 {
+            digits = "0" + String(digits.dropFirst(2))
+        }
+        return String(digits.prefix(10))
+    }
+
     private static func isValidEmail(_ text: String) -> Bool {
         let pattern = #"^[A-Za-z0-9._%+\-]+@[A-Za-z0-9\-]+(\.[A-Za-z0-9\-]+)*\.[A-Za-z]{2,}$"#
         return text.range(of: pattern, options: .regularExpression) != nil

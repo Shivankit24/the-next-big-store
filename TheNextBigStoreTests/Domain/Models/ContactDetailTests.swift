@@ -44,4 +44,18 @@ struct ContactDetailTests {
     func rejectsOtherNumbers(input: String) {
         #expect(ContactDetail(parsing: input) == nil)
     }
+
+    @Test(arguments: [
+        ("0412 345 678", "0412345678"),
+        ("04-1234-5678", "0412345678"),
+        ("+61 412 345 678", "0412345678"),
+        ("0061 412 345 678", "0412345678"),
+        ("04123456789", "0412345678"),
+        ("04a1", "041"),
+        ("61", "61"),
+        ("", ""),
+    ])
+    func sanitisesPhoneInputToLocalDigits(input: String, expected: String) {
+        #expect(ContactDetail.sanitizedAustralianDigits(from: input) == expected)
+    }
 }
