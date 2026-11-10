@@ -53,4 +53,11 @@ nonisolated struct Constants {
             count == 1 ? "1 result for “\(query)”" : "\(count) results for “\(query)”"
         }
     }
+
+    nonisolated struct Enquiry {
+        static let nameRequired = "Please enter your name."
+        static let contactRequired = "Please enter an email address or phone number."
+        static let contactInvalid = "Enter a valid email address or Australian phone number."
+        static let messageRequired = "Please tell us what you would like to know."
+    }
 }
