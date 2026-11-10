@@ -47,4 +47,11 @@ nonisolated struct PreviewProductRepository: ProductRepository {
         return product
     }
 }
+
+/// Enquiry repository that pretends to deliver after a short pause, for previews only.
+nonisolated struct PreviewEnquiryRepository: EnquiryRepository {
+    func submit(_ enquiry: Enquiry) async throws {
+        try await Task.sleep(for: .milliseconds(600))
+    }
+}
 #endif

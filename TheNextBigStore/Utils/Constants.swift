@@ -59,5 +59,19 @@ nonisolated struct Constants {
         static let contactRequired = "Please enter an email address or phone number."
         static let contactInvalid = "Enter a valid email address or Australian phone number."
         static let messageRequired = "Please tell us what you would like to know."
+        static let title = "Enquiry"
+        static let cancel = "Cancel"
+        static let nameLabel = "Name"
+        static let namePlaceholder = "Your full name"
+        static let contactLabel = "Email or phone"
+        static let contactPlaceholder = "Email or Australian phone number"
+        static let messageLabel = "Your enquiry"
+        static let messagePlaceholder = "What would you like to know?"
+        static let submit = "Submit"
+        static let thankYouTitle = "Thank you!"
+        static let done = "Done"
+        static func thankYouMessage(productTitle: String) -> String {
+            "We have received your enquiry about \(productTitle). Our team will be in touch soon."
+        }
     }
 }
