@@ -5,6 +5,8 @@
 //  Created by Shivankit on 09/11/26.
 //
 
+import Foundation
+
 nonisolated struct Constants {
     struct NetworkErrors {
         static let invalidURL = "The request could not be created."
