@@ -14,7 +14,9 @@ struct AppContainer {
     let imageLoader: any ImageLoading
 
     static let live = AppContainer(
-        productRepository: RemoteProductRepository(client: URLSessionHTTPClient()),
+        productRepository: CachedProductRepository(
+            wrapping: RemoteProductRepository(client: URLSessionHTTPClient())
+        ),
         imageLoader: ImageLoader()
     )
 
