@@ -49,5 +49,9 @@ nonisolated struct Constants {
         static let placeholder = "Search products"
         static let clearLabel = "Clear search"
         static let searchLabel = "Search"
+        static let cancel = "Cancel"
+        static func resultsTitle(count: Int, query: String) -> String {
+            count == 1 ? "1 result for “\(query)”" : "\(count) results for “\(query)”"
+        }
     }
 }
