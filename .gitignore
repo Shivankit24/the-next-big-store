@@ -6,6 +6,14 @@
 
 ## User settings
 xcuserdata/
+*.xcuserstate
+*.xcscmblueprint
+*.xccheckout
+
+## Build output
+build/
+DerivedData/
+*.xcresult
 
 ## Obj-C/Swift specific
 *.hmap
@@ -62,3 +70,18 @@ fastlane/report.xml
 fastlane/Preview.html
 fastlane/screenshots/**/*.png
 fastlane/test_output
+
+# Node (ios-mock-server)
+node_modules/
+dist/
+*.tsbuildinfo
+npm-debug.log*
+
+# Environment / secrets (commit only the example file)
+.env
+.env.*
+!.env.example
+
+# Editors
+.idea/
+.vscode/
