@@ -11,9 +11,11 @@ import Foundation
 /// Swap implementations here (data source, email provider) without touching features.
 struct AppContainer {
     let productRepository: any ProductRepository
+    let imageLoader: any ImageLoading
 
     static let live = AppContainer(
-        productRepository: RemoteProductRepository(client: URLSessionHTTPClient())
+        productRepository: RemoteProductRepository(client: URLSessionHTTPClient()),
+        imageLoader: ImageLoader()
     )
 
     func makeHomeViewModel() -> HomeViewModel {
