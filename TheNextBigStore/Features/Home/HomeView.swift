@@ -18,7 +18,7 @@ struct HomeView: View {
     var body: some View {
         NavigationStack {
             content
-                .navigationTitle(Constants.Home.title)
+                .toolbarVisibility(.hidden, for: .navigationBar)
                 .task { await viewModel.loadIfNeeded() }
         }
     }
@@ -31,8 +31,16 @@ struct HomeView: View {
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
         case .loaded(let products):
             ScrollView {
-                ProductGridView(products: products)
-                    .padding(Theme.Spacing.l)
+                // The title is ordinary content, so it scrolls away with the page. The global
+                // search bar is the only element that stays pinned.
+                VStack(alignment: .leading, spacing: Theme.Spacing.l) {
+                    Text(Constants.Home.title)
+                        .font(.title2.bold())
+                        .accessibilityAddTraits(.isHeader)
+                    ProductGridView(products: products)
+                }
+                .padding(Theme.Spacing.l)
+                .frame(maxWidth: .infinity, alignment: .leading)
             }
         case .failed(let message):
             ContentUnavailableView {
