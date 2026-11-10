@@ -70,15 +70,14 @@ struct EnquiryFormView: View {
             }
 
             Section {
-                TextField(
-                    Constants.Enquiry.contactPlaceholder,
-                    text: Binding(get: { viewModel.contact }, set: { viewModel.updateContact($0) })
-                )
-                    .textInputAutocapitalization(.never)
-                    .autocorrectionDisabled()
-                    .submitLabel(.next)
-                    .focused($focusedField, equals: .contact)
-                    .onSubmit { focusedField = .message }
+                Picker(Constants.Enquiry.contactLabel, selection: contactMethodBinding) {
+                    Text(Constants.Enquiry.emailOption).tag(EnquiryViewModel.ContactMethod.email)
+                    Text(Constants.Enquiry.phoneOption).tag(EnquiryViewModel.ContactMethod.phone)
+                }
+                .pickerStyle(.segmented)
+                .labelsHidden()
+
+                contactField
             } header: {
                 Text(Constants.Enquiry.contactLabel)
             } footer: {
@@ -96,11 +95,45 @@ struct EnquiryFormView: View {
             }
         }
         .scrollDismissesKeyboard(.interactively)
+        .animation(.snappy(duration: 0.2), value: viewModel.contactMethod)
+        .toolbar {
+            // A number pad has no return key, so give it a way to close.
+            ToolbarItemGroup(placement: .keyboard) {
+                Spacer()
+                Button(Constants.Enquiry.done) { focusedField = nil }
+            }
+        }
         // Leaving a field is what lets its error show.
         .onChange(of: focusedField) { previous, _ in
             if let previous { viewModel.touch(previous) }
         }
         .safeAreaInset(edge: .bottom, spacing: 0) { submitBar }
+    }
+
+    /// Email mode is a plain address field. Phone mode shows a fixed +61 beside a number-only
+    /// field, so the customer only types the 10 digits.
+    @ViewBuilder
+    private var contactField: some View {
+        switch viewModel.contactMethod {
+        case .email:
+            TextField(Constants.Enquiry.emailPlaceholder, text: contactBinding)
+                .keyboardType(.emailAddress)
+                .textContentType(.emailAddress)
+                .textInputAutocapitalization(.never)
+                .autocorrectionDisabled()
+                .submitLabel(.next)
+                .focused($focusedField, equals: .contact)
+                .onSubmit { focusedField = .message }
+        case .phone:
+            HStack(spacing: Theme.Spacing.s) {
+                Text(Constants.Enquiry.countryCode)
+                    .foregroundStyle(.secondary)
+                TextField(Constants.Enquiry.phonePlaceholder, text: contactBinding)
+                    .keyboardType(.numberPad)
+                    .textContentType(.telephoneNumber)
+                    .focused($focusedField, equals: .contact)
+            }
+        }
     }
 
     private var submitBar: some View {
@@ -164,6 +197,14 @@ struct EnquiryFormView: View {
     }
 
     // MARK: Helpers
+
+    private var contactBinding: Binding<String> {
+        Binding(get: { viewModel.contact }, set: { viewModel.updateContact($0) })
+    }
+
+    private var contactMethodBinding: Binding<EnquiryViewModel.ContactMethod> {
+        Binding(get: { viewModel.contactMethod }, set: { viewModel.selectContactMethod($0) })
+    }
 
     private func binding(_ keyPath: ReferenceWritableKeyPath<EnquiryViewModel, String>) -> Binding<String> {
         Binding(
