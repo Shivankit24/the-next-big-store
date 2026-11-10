@@ -12,4 +12,14 @@ import Foundation
 nonisolated protocol ProductRepository: Sendable {
     func fetchProducts() async throws -> [Product]
     func fetchProduct(id: Int) async throws -> Product
+
+    /// Products matching `query`. Implementations backed by an API with its own search can
+    /// override this; the default searches the full catalogue on the device.
+    func searchProducts(matching query: String) async throws -> [Product]
+}
+
+extension ProductRepository {
+    nonisolated func searchProducts(matching query: String) async throws -> [Product] {
+        try await fetchProducts().search(query)
+    }
 }
