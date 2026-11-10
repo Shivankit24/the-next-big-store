@@ -7,18 +7,27 @@
 
 import SwiftUI
 
-/// The app's top-level view. Tabs for Search and Categories will be added here.
+/// The app's top-level view: a tab bar with Home and Categories. Search joins it later.
 struct RootView: View {
     @State private var homeViewModel: HomeViewModel
+    @State private var categoryViewModel: CategoryViewModel
     private let imageLoader: any ImageLoading
 
     init(container: AppContainer) {
         _homeViewModel = State(initialValue: container.makeHomeViewModel())
+        _categoryViewModel = State(initialValue: container.makeCategoryViewModel())
         imageLoader = container.imageLoader
     }
 
     var body: some View {
-        HomeView(viewModel: homeViewModel)
-            .environment(\.imageLoader, imageLoader)
+        TabView {
+            Tab(Constants.Tabs.home, systemImage: "house") {
+                HomeView(viewModel: homeViewModel)
+            }
+            Tab(Constants.Tabs.categories, systemImage: "square.grid.2x2") {
+                CategoryView(viewModel: categoryViewModel)
+            }
+        }
+        .environment(\.imageLoader, imageLoader)
     }
 }

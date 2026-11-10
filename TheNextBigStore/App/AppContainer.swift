@@ -23,4 +23,8 @@ struct AppContainer {
     func makeHomeViewModel() -> HomeViewModel {
         HomeViewModel(repository: productRepository)
     }
+
+    func makeCategoryViewModel() -> CategoryViewModel {
+        CategoryViewModel(repository: productRepository)
+    }
 }

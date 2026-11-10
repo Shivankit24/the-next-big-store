@@ -41,4 +41,9 @@ nonisolated struct Constants {
         static let expanded = "Expanded"
         static let collapsed = "Collapsed"
     }
+
+    nonisolated struct Tabs {
+        static let home = "Home"
+        static let categories = "Categories"
+    }
 }
