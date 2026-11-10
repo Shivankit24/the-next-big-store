@@ -16,6 +16,7 @@ nonisolated struct Constants {
 
     nonisolated struct Catalogue {
         static let featuredCount = 5
+        static let topRatedPerCategory = 5
     }
 
     nonisolated struct Currency {
