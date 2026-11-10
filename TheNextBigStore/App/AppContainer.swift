@@ -19,7 +19,8 @@ struct AppContainer {
             wrapping: RemoteProductRepository(client: URLSessionHTTPClient())
         ),
         imageLoader: ImageLoader(),
-        enquiryRepository: RemoteEnquiryRepository(client: URLSessionHTTPClient())
+        // MVP placeholder: enquiries go nowhere yet. Use RemoteEnquiryRepository once the backend exists.
+        enquiryRepository: PlaceholderEnquiryRepository()
     )
 
     func makeHomeViewModel() -> HomeViewModel {
