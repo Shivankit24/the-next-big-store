@@ -138,7 +138,7 @@ Where to change things:
 
 - [DECISIONS.md](DECISIONS.md): assumptions, simplifications, how the design grows, next steps
 - [AI_USAGE.md](AI_USAGE.md): how AI was used
-- [TIME_SPENT.md](TIME_SPENT.md): time spent
+- [TIME_SPENT.md](TIME_SPENT.md): time spent to finish the entire MVP (from planning till deployment)
 
 ## Conventions
 
