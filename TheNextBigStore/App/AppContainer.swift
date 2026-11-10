@@ -12,12 +12,14 @@ import Foundation
 struct AppContainer {
     let productRepository: any ProductRepository
     let imageLoader: any ImageLoading
+    let enquiryRepository: any EnquiryRepository
 
     static let live = AppContainer(
         productRepository: CachedProductRepository(
             wrapping: RemoteProductRepository(client: URLSessionHTTPClient())
         ),
-        imageLoader: ImageLoader()
+        imageLoader: ImageLoader(),
+        enquiryRepository: RemoteEnquiryRepository(client: URLSessionHTTPClient())
     )
 
     func makeHomeViewModel() -> HomeViewModel {
@@ -30,5 +32,9 @@ struct AppContainer {
 
     func makeSearchViewModel() -> SearchViewModel {
         SearchViewModel(repository: productRepository)
+    }
+
+    func makeEnquiryViewModel(for product: Product) -> EnquiryViewModel {
+        EnquiryViewModel(product: product, repository: enquiryRepository)
     }
 }
